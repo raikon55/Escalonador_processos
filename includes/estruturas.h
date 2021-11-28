@@ -9,6 +9,7 @@ typedef struct fila_processos fila_processos_t;
 struct processo {
     unsigned int PID;
     unsigned long tamanho;
+    unsigned short quantum;
     unsigned short prioridade;
     unsigned long tempo_chegada;
     unsigned long tempo_processador;
@@ -16,7 +17,7 @@ struct processo {
 };
 
 struct escalonador {
-    char politica; // R: Round-Robin, F: FIFO
+    char politica; // R: Round-Robin, F: FIFO, P: Prioridade
     unsigned short quantum;
 
     fila_processos_t* fila;
@@ -29,6 +30,7 @@ struct escalonador {
 struct elemento {
     processo_t processo;
     elemento_t* proximo;
+    elemento_t* anterior;
 };
 
 struct fila_processos {

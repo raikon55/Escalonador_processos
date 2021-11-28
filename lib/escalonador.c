@@ -64,6 +64,8 @@ void calcula_processo(escalonador_t* escalonador) {
             return;
         }
         escalonador->tempo_atual += processo.tamanho;
+    } else if (escalonador->politica == 'P') { // Prioridade
+        processo_t processo = desenfileirar(escalonador->fila);
     }
 }
 
