@@ -51,6 +51,7 @@ void exibir_fila(fila_processos_t* fila) {
         printf("PID: %li\nTamanho: %li\nQuantum: %li\nPrioridade: %i\nTempo chegada: %li\nTempo de processador: %li\n",
             processo.PID, processo.tamanho, processo.quantum, processo.prioridade,
             processo.tempo_chegada, processo.tempo_processador);
+        puts("_________________________");
     }
 }
 

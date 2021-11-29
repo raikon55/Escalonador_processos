@@ -20,6 +20,8 @@ void main(void) {
         if (fila_vazia(escalonador->fila)) {
             carrega_estado_escalonador(escalonador);
         }
+        puts("------------------------------");
+        exibir_fila(escalonador->fila);
         recebe_processo(escalonador, controle);
         envia_prox_para_CPU(escalonador);
         organiza_fila(escalonador);

@@ -85,6 +85,7 @@ void processa(escalonador_t* escalonador) {
     case 'P':
         organiza_fila(escalonador);
         processo = desenfileirar(escalonador->fila);
+        escalonador->tempo_atual += processo.tamanho;
         break;
 
     default:
