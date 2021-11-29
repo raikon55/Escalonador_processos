@@ -15,7 +15,7 @@ void inicializar_escalonador(escalonador_t* escalonador, short quantum, char pol
     inicializar_fila(escalonador->fila);
 }
 
-void aguardar_processo(escalonador_t* escalonador) {
+void aguarda_processo(escalonador_t* escalonador) {
     long tamanho;
     int prioridade;
     char buffer[32] = {};
@@ -36,20 +36,34 @@ void aguardar_processo(escalonador_t* escalonador) {
 }
 
 void recebe_processo(escalonador_t* escalonador, processo_t processo) {
-    escalonador->tempo_total += processo.tamanho;
-    escalonador->ultimo_tempo_chegada = escalonador->tempo_atual;
-    enfileirar(processo, escalonador->fila);
+    if (processo.tamanho == 0) {
+        float probabilidade = 0.1;
+        float prob = ( ((float)(rand()%10))+1.0)/10.0;
+        if (prob <= probabilidade) {
+            processo_t novo_proc = novo_processo(escalonador, rand() % 51, rand() % 4); 
+            escalonador->tempo_total += novo_proc.tamanho;
+            escalonador->ultimo_tempo_chegada = escalonador->tempo_atual;
+            enfileirar(novo_proc, escalonador->fila);
+        }
+    } else {
+        escalonador->tempo_total += processo.tamanho;
+        escalonador->ultimo_tempo_chegada = escalonador->tempo_atual;
+        enfileirar(processo, escalonador->fila);
+    }
 }
 
-void calcula_processo(escalonador_t* escalonador) {
-    if (escalonador->politica == 'R') { // RR
+void processa(escalonador_t* escalonador) {
+    int resto_tempo;
+    processo_t processo;
+
+    switch (escalonador->politica) { // RR
+    case 'R':
         if ( !fila_vazia(escalonador->fila) ) {
-            processo_t processo = desenfileirar(escalonador->fila);
+            processo = desenfileirar(escalonador->fila);
             if (processo.tamanho == 0) {
-                enfileirar(processo, escalonador->fila);
                 return;
             }
-            int resto_tempo = ( (processo.tamanho - processo.tempo_processador) < escalonador->quantum ) ?
+            resto_tempo = ( (processo.tamanho - processo.tempo_processador) < escalonador->quantum ) ?
                             (processo.tamanho - processo.tempo_processador) :
                             escalonador->quantum;
             processo.tempo_processador += resto_tempo;
@@ -58,27 +72,33 @@ void calcula_processo(escalonador_t* escalonador) {
                 enfileirar(processo, escalonador->fila);
             }
         }
-    } else if (escalonador->politica == 'F') { // FIFO
-        processo_t processo = desenfileirar(escalonador->fila);
+        break;
+
+    case 'F':
+        processo = desenfileirar(escalonador->fila);
         if (processo.tamanho == 0) {
             return;
         }
         escalonador->tempo_atual += processo.tamanho;
-    } else if (escalonador->politica == 'P') { // Prioridade
-        processo_t processo = desenfileirar(escalonador->fila);
+        break;
+
+    case 'P':
+        processo = desenfileirar(escalonador->fila);
+        break;
+
+    default:
+        return;
     }
 }
 
 void envia_prox_para_CPU(escalonador_t* escalonador) {
-    if (escalonador->tempo_total >= escalonador->tempo_atual) calcula_processo(escalonador);
+    if (escalonador->tempo_total >= escalonador->tempo_atual) {
+        processa(escalonador);
+    }
 }
 
 int existe_processo(escalonador_t* escalonador) {
-    if (escalonador->politica == 'R') {
-        return (escalonador->tempo_total != escalonador->tempo_atual);
-    } else if (escalonador->politica == 'F') {
-        return 0;
-    }
+    return escalonador->existe_processo;
 }
 
 processo_t novo_processo(escalonador_t* escalonador, long tamanho, short prioridade) {
@@ -90,4 +110,41 @@ processo_t novo_processo(escalonador_t* escalonador, long tamanho, short priorid
     processo.tempo_chegada = escalonador->ultimo_tempo_chegada;
 
     return processo;
+}
+
+void salva_estado_escalonador(escalonador_t* escalonador) {
+    FILE* arquivo = fopen("./data/memoria.csv", "w");
+    if (arquivo == NULL) {
+        puts("Erro ao abrir o arquivo");
+        exit(0);
+    }
+
+    escalonador->existe_processo = (escalonador->fila->tamanho != 0);
+    fprintf(arquivo, "%c;%i;%li;%li;%li\n",
+        escalonador->politica, escalonador->quantum, escalonador->tempo_atual, escalonador->tempo_total, escalonador->ultimo_tempo_chegada);
+
+    while (!fila_vazia(escalonador->fila)) {
+        processo_t processo = desenfileirar(escalonador->fila);
+            fprintf(arquivo, "%i;%li;%i;%i;%li;%li;%li\n",
+        processo.PID, processo.tamanho, processo.quantum, processo.prioridade, processo.tempo_chegada, processo.tempo_processador, processo.tempo_total_processador);
+    }
+    fclose(arquivo);
+}
+
+void carrega_estado_escalonador(escalonador_t* escalonador) {
+    processo_t processo;
+    FILE* arquivo = fopen("./data/memoria.csv", "r");
+    if (arquivo == NULL) {
+        puts("Erro ao abrir o arquivo");
+        return;
+    }
+
+    fscanf(arquivo, "%c;%i;%li;%li;%li[^\n]\n",
+        &escalonador->politica, &escalonador->quantum, &escalonador->tempo_atual, &escalonador->tempo_total, &escalonador->ultimo_tempo_chegada);
+
+    while (fscanf(arquivo, "%i;%li;%i;%i;%li;%li;%li[^\n]\n",
+        &processo.PID, &processo.tamanho, &processo.quantum, &processo.prioridade, &processo.tempo_chegada, &processo.tempo_processador, &processo.tempo_total_processador) == 7) {
+        enfileirar(processo, escalonador->fila);
+    }
+    fclose(arquivo);
 }

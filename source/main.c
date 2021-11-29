@@ -12,11 +12,19 @@ void main(void) {
     }
     inicializar_escalonador(escalonador, 5, 'R');
 
+    processo_t controle;
+    controle.tamanho = 0;
+
+    aguarda_processo(escalonador);
     do {
-        aguardar_processo(escalonador);
-        exibir_fila(escalonador->fila);
-        // recebe_processo();
-        // calcula_quantum();
+        if (fila_vazia(escalonador->fila)) {
+            carrega_estado_escalonador(escalonador);
+        }
+        recebe_processo(escalonador, controle);
+        // calcula_quantum(escalonador);
+        // exibir_fila(escalonador->fila);
+        // puts("----------------------------------------------");
         envia_prox_para_CPU(escalonador);
+        salva_estado_escalonador(escalonador);
     } while (existe_processo(escalonador));
 }

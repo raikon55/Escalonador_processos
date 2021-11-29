@@ -10,10 +10,11 @@
 #include "fila.h"
 #include "estruturas.h"
 
+void aguarda_processo(escalonador_t* escalonador);
 void recebe_processo(escalonador_t*, processo_t);
-void aguardar_processo(escalonador_t* escalonador);
-void calcula_processo(escalonador_t*);
-void preempcao(int);
+void processa(escalonador_t*);
+void carrega_estado_escalonador(escalonador_t* escalonador);
+void salva_estado_escalonador(escalonador_t* escalonador);
 void envia_prox_para_CPU(escalonador_t*);
 int existe_processo(escalonador_t*);
 void organiza_filas(void);

@@ -20,6 +20,7 @@ struct escalonador {
     char politica; // R: Round-Robin, F: FIFO, P: Prioridade
     unsigned short quantum;
 
+    short existe_processo;
     fila_processos_t* fila;
     
     unsigned long tempo_atual;
@@ -30,7 +31,6 @@ struct escalonador {
 struct elemento {
     processo_t processo;
     elemento_t* proximo;
-    elemento_t* anterior;
 };
 
 struct fila_processos {
