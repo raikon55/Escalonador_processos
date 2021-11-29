@@ -13,6 +13,7 @@
 void aguarda_processo(escalonador_t* escalonador);
 void recebe_processo(escalonador_t*, processo_t);
 void processa(escalonador_t*);
+void organiza_fila(escalonador_t*);
 void carrega_estado_escalonador(escalonador_t* escalonador);
 void salva_estado_escalonador(escalonador_t* escalonador);
 void envia_prox_para_CPU(escalonador_t*);

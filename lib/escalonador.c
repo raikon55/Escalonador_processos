@@ -101,10 +101,17 @@ int existe_processo(escalonador_t* escalonador) {
     return escalonador->existe_processo;
 }
 
+void organiza_fila(escalonador_t* escalonador) {
+    ordenar_fila(escalonador->fila);
+    exibir_fila(escalonador->fila);
+    puts("--------------------------");
+}
+
 processo_t novo_processo(escalonador_t* escalonador, long tamanho, short prioridade) {
     processo_t processo;
     processo.PID = rand() % 1000;
     processo.tamanho = tamanho;
+    processo.quantum = escalonador->quantum;
     processo.tempo_processador = 0;
     processo.prioridade = prioridade;
     processo.tempo_chegada = escalonador->ultimo_tempo_chegada;

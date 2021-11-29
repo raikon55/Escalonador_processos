@@ -25,6 +25,7 @@ void main(void) {
         // exibir_fila(escalonador->fila);
         // puts("----------------------------------------------");
         envia_prox_para_CPU(escalonador);
+        organiza_fila(escalonador);
         salva_estado_escalonador(escalonador);
     } while (existe_processo(escalonador));
 }

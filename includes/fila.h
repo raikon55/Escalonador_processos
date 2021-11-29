@@ -33,6 +33,11 @@ processo_t desenfileirar(fila_processos_t* fila);
 void exibir_fila(fila_processos_t* elemento);
 
 /*
+ * Ordena a fila por prioridade e tamanho do processo
+ */
+void ordenar_fila(fila_processos_t* fila);
+
+/*
  * Deleta todos os processos da fila, e em seguida a propria fila
  */
 void deletar_fila(fila_processos_t*);

@@ -48,9 +48,51 @@ processo_t desenfileirar(fila_processos_t* fila) {
 void exibir_fila(fila_processos_t* fila) {
     for(elemento_t* e = fila->inicio; e != NULL; e = e->proximo) {
         processo_t processo = e->processo;
-        printf("PID: %li\nTamanho: %li\nQuantum: %li\nPrioridade: %i\nTempo chegada: %li\nTempo de processador: %li\nTempo total de processamento: %li\n",
+        printf("PID: %li\nTamanho: %li\nQuantum: %li\nPrioridade: %i\nTempo chegada: %li\nTempo de processador: %li\n",
             processo.PID, processo.tamanho, processo.quantum, processo.prioridade,
-            processo.tempo_chegada, processo.tempo_processador, processo.tempo_total_processador);
+            processo.tempo_chegada, processo.tempo_processador);
+    }
+}
+
+void ordenar_fila(fila_processos_t* fila) {
+    int i = 0;
+    int tamanho = fila->tamanho;
+    processo_t* processos = (processo_t*) calloc(fila->tamanho, sizeof(processo_t));
+
+    while (!fila_vazia(fila)) {
+        processos[i] = desenfileirar(fila);
+        i++;
+    }
+
+    for (int j = 0; j < i; j++) {
+        for (int k = 0; k < i; k++) {
+            if (processos[k].prioridade < processos[j].prioridade) {
+                processo_t aux = processos[j];
+                processos[j] = processos[k];
+                processos[k] = aux;
+            }
+        }
+    }
+
+    int prioridade = 0;
+    while (prioridade < 4) {
+        for (int j = 0; j < i; j++) {
+            for (int k = 0; k < i; k++) {
+                if (prioridade == processos[j].prioridade && processos[j].prioridade == processos[k].prioridade)
+                if (processos[k].tamanho < processos[j].tamanho) {
+                    processo_t aux = processos[j];
+                    processos[j] = processos[k];
+                    processos[k] = aux;
+                }
+            }
+        }   
+        prioridade++;
+    }
+
+    i = 0;
+    while (i < tamanho) {
+        enfileirar(processos[i], fila);
+        i++;
     }
 }
 
