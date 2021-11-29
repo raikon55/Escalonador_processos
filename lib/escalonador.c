@@ -83,6 +83,7 @@ void processa(escalonador_t* escalonador) {
         break;
 
     case 'P':
+        organiza_fila(escalonador);
         processo = desenfileirar(escalonador->fila);
         break;
 
@@ -103,8 +104,6 @@ int existe_processo(escalonador_t* escalonador) {
 
 void organiza_fila(escalonador_t* escalonador) {
     ordenar_fila(escalonador->fila);
-    // exibir_fila(escalonador->fila);
-    puts("--------------------------");
 }
 
 processo_t novo_processo(escalonador_t* escalonador, long tamanho, short prioridade) {

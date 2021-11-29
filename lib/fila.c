@@ -93,7 +93,6 @@ void ordenar_fila(fila_processos_t* fila) {
     i = 0;
     while (i < tamanho) {
         enfileirar(processos[i], fila);
-        // printf("%i %i %li\n", processos[i].PID, processos[i].prioridade, processos[i].tamanho);
         i++;
     }
 }
@@ -103,6 +102,5 @@ void deletar_fila(fila_processos_t* fila) {
     while(!fila_vazia(fila)) {
         desenfileirar(fila);
     }
-
     free(fila);
 }

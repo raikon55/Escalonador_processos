@@ -10,7 +10,7 @@ void main(void) {
         puts("Erro na alocação");
         exit(0);
     }
-    inicializar_escalonador(escalonador, 5, 'R');
+    inicializar_escalonador(escalonador, 5, 'P');
 
     processo_t controle;
     controle.tamanho = 0;
@@ -21,9 +21,6 @@ void main(void) {
             carrega_estado_escalonador(escalonador);
         }
         recebe_processo(escalonador, controle);
-        // calcula_quantum(escalonador);
-        // exibir_fila(escalonador->fila);
-        // puts("----------------------------------------------");
         envia_prox_para_CPU(escalonador);
         organiza_fila(escalonador);
         salva_estado_escalonador(escalonador);
