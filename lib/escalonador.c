@@ -103,7 +103,7 @@ int existe_processo(escalonador_t* escalonador) {
 
 void organiza_fila(escalonador_t* escalonador) {
     ordenar_fila(escalonador->fila);
-    exibir_fila(escalonador->fila);
+    // exibir_fila(escalonador->fila);
     puts("--------------------------");
 }
 

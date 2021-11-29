@@ -78,11 +78,12 @@ void ordenar_fila(fila_processos_t* fila) {
     while (prioridade < 4) {
         for (int j = 0; j < i; j++) {
             for (int k = 0; k < i; k++) {
-                if (prioridade == processos[j].prioridade && processos[j].prioridade == processos[k].prioridade)
-                if (processos[k].tamanho < processos[j].tamanho) {
-                    processo_t aux = processos[j];
-                    processos[j] = processos[k];
-                    processos[k] = aux;
+                if (prioridade == processos[j].prioridade && processos[j].prioridade == processos[k].prioridade) {
+                    if (processos[k].tamanho < processos[j].tamanho) {
+                        processo_t aux = processos[j];
+                        processos[j] = processos[k];
+                        processos[k] = aux;
+                    }
                 }
             }
         }   
@@ -92,6 +93,7 @@ void ordenar_fila(fila_processos_t* fila) {
     i = 0;
     while (i < tamanho) {
         enfileirar(processos[i], fila);
+        // printf("%i %i %li\n", processos[i].PID, processos[i].prioridade, processos[i].tamanho);
         i++;
     }
 }
